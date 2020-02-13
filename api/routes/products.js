@@ -13,4 +13,16 @@ router.post('/', (request, response, next) => {
     });
 });
 
+router.get('/:productId', (request, response, next) => {
+    const id = request.params.productId;
+
+    if (!isNaN(id)) {
+        response.status(200).json({
+            message: "Product got",
+            id: id
+        });
+    }
+
+});
+
 module.exports = router;
