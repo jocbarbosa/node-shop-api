@@ -25,4 +25,10 @@ router.get('/:productId', (request, response, next) => {
 
 });
 
+router.delete(':productId', (request, response, next) => {
+    response.status(200).json({
+
+    });
+});
+
 module.exports = router;
