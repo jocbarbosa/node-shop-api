@@ -11,8 +11,8 @@ router.get('/', (request, response, next) => {
 
 router.post('/', (request, response, next) => {
     const product = new Product({
-        _id : mongoose.Schema.Types.ObjectId,
-        name:  request.body.name,
+        _id : new mongoose.Types.ObjectId(),
+        name: request.body.name,
         price: request.body.price
     });
 
@@ -20,8 +20,8 @@ router.post('/', (request, response, next) => {
     .then(result => {
         console.log(result)
     })
-    .catch(err => console.log(err));
-    response.status(200).json({
+    Promise.reject('Oops').catch(err => console.log(err));
+    response.status(201).json({
         message: "An order was created",
         createProduct: product
     });
