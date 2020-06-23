@@ -7,9 +7,9 @@ const mongoose = require('mongoose');
 const productsRoutes = require('./api/routes/products');
 const ordersRoutes = require('./api/routes/orders')
 
-mongoose.connect("mongodb+srv://api_user:"+ process.env.MONGODB_PW +"@node-server-mlbks.mongodb.net/test?retryWrites=true&w=majority", {
-    useNewUrlParser : true,
-    useUnifiedTopology : true
+mongoose.connect(`mongodb+srv://node-api:${process.env.MONGODB_PW}@cluster0-mlbks.mongodb.net/node_api?retryWrites=true&w=majority`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
 app.use(morgan('dev'));
