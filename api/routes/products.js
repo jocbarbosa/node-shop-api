@@ -53,6 +53,16 @@ router.post('/', (request, response, next) => {
         );
 });
 
+router.put('/:productId', (request, response, next) => {
+    const product = Product.findByIdAndUpdate({ _id: request.params.productId }, request.body, { new: true }, (err, result) => {
+        if (err) {
+            response.json(err);
+        } else {
+            response.json(result);
+        }
+    });
+});
+
 router.delete('/:productId', (request, response, next) => {
     const product = Product.findByIdAndDelete(request.params.productId)
         .exec()
