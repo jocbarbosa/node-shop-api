@@ -5,9 +5,26 @@ const mongoose = require('mongoose');
 
 router.get('/', (request, response) => {
     const products = Product.find()
+        .select('name price _id')
         .exec()
         .then(docs => {
-            response.json(docs);
+            const dataResponse = {
+                count: docs.length,
+                products: docs.map(product => {
+                    return {
+                        id: product._id,
+                        name: product.name,
+                        price: product.price,
+                        request: {
+                            type: 'GET',
+                            url: `http://localhost:3000/products/${product._id}`
+                        }
+                    }
+
+                })
+            }
+
+            response.json(dataResponse);
         })
         .catch(error => {
             response.status(500).json({ error });
@@ -16,10 +33,18 @@ router.get('/', (request, response) => {
 
 router.get('/:productId', (request, response, next) => {
     const id = request.params.productId;
-    Product.findById(id).exec()
+    Product.findById(id)
+        .select('name price _id')
+        .exec()
         .then(doc => {
             if (doc) {
-                return response.json(doc);
+                return response.json({
+                    product: doc,
+                    request: {
+                        type: 'GET',
+                        url: `http://localhost:3000/products/${doc._id}`
+                    }
+                });
             }
 
             response.status(404).json({ message: 'No product found with this Id' })
@@ -42,8 +67,16 @@ router.post('/', (request, response, next) => {
     product.save()
         .then(result => {
             response.status(201).json({
-                message: "An order was created",
-                createProduct: product
+                message: "A new product was created",
+                createdProduct: {
+                    id: result._id,
+                    name: result.name,
+                    price: result.price,
+                    request: {
+                        type: 'POST',
+                        url: `http://localhost:3000/products/${result._id}`
+                    }
+                }
             });
         })
         .catch(error => {
