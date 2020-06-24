@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const Order = require('../models/order');
 const Product = require('../models/product');
+const { request } = require('express');
 
 router.get('/', (request, response) => {
     Order.find()
@@ -29,7 +30,24 @@ router.get('/', (request, response) => {
         .catch(err => {
             response.json(err);
         })
-})
+});
+
+router.get('/:orderId', (request, response, next) => {
+    const order = Order.findById(request.params.orderId)
+        .select('quantity product _id')
+        .exec()
+        .then(order => {
+            if (order) {
+                response.json(order);
+            } else {
+                response.status(404).json({ message: 'Order not found' });
+            }
+
+        })
+        .catch(error => {
+            response.status(500).json({ error });
+        })
+});
 
 router.post('/', (request, response, next) => {
     const order = new Order({
@@ -58,6 +76,19 @@ router.post('/', (request, response, next) => {
         .catch(err => {
             response.status(500).json(err);
         })
+});
+
+router.delete('/:orderId', (request, response, next) => {
+    const order = Order.findByIdAndDelete(request.params.orderId)
+        .exec()
+        .then(result => {
+            if (result) {
+                response.send();
+            } else {
+                response.status(404).json({ message: 'Product Id not found' });
+            }
+        })
+        .catch()
 });
 
 module.exports = router;
