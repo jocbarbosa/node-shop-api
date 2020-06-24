@@ -1,35 +1,63 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 
-router.get('/', (request, response, next) => {
-    response.status(200).json({
-        message: "Orders"
-    });
-});
+const Order = require('../models/order');
+const Product = require('../models/product');
+
+router.get('/', (request, response) => {
+    Order.find()
+        .select('product quantity _id')
+        .exec()
+        .then(docs => {
+            const responseData = {
+                count: docs.length,
+                orders: docs.map(product => {
+                    return {
+                        id: product._id,
+                        quantity: product.quantity,
+                        product: product.product,
+                        request: {
+                            type: 'GET',
+                            url: `http://localhost:3000/orders/${product._id}`
+                        }
+                    }
+                })
+            }
+            response.json(responseData);
+        })
+        .catch(err => {
+            response.json(err);
+        })
+})
 
 router.post('/', (request, response, next) => {
-    const order = {
-        productId: request.body.productId,
-        quantity: request.body.quantity
-    };
-    response.status(200).json({
-        message: "An order was created",
-        order: order
+    const order = new Order({
+        _id: mongoose.Types.ObjectId(),
+        quantity: request.body.quantity,
+        product: request.body.productId
     });
-});
 
-router.get('/:orderId', (request, response, next) => {
-    response.status(200).json({
-        message: "Order details",
-        orderId: request.params.orderId
-    });
-});
+    order.save()
+        .then(result => {
+            const responseData = {
+                message: 'Order stored',
+                createdOrder: {
+                    id: result._id,
+                    product: result.product,
+                    quantity: result.quantity,
+                },
+                request: {
+                    type: 'POST',
+                    url: `http://localhost:3000/orders/${result._id}`
+                }
+            }
 
-router.delete('/:orderId', (request, response, next) => {
-    response.status(200).json({
-        message: "Order deleted",
-        orderId: request.params.orderId
-    });
+            response.json(responseData);
+        })
+        .catch(err => {
+            response.status(500).json(err);
+        })
 });
 
 module.exports = router;
