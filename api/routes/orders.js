@@ -9,6 +9,7 @@ const { request } = require('express');
 router.get('/', (request, response) => {
     Order.find()
         .select('product quantity _id')
+        .populate('product', 'name price')
         .exec()
         .then(docs => {
             const responseData = {
@@ -35,6 +36,7 @@ router.get('/', (request, response) => {
 router.get('/:orderId', (request, response, next) => {
     const order = Order.findById(request.params.orderId)
         .select('quantity product _id')
+        .populate('product', 'name price')
         .exec()
         .then(order => {
             if (order) {
