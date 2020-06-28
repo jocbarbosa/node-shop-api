@@ -77,7 +77,7 @@ module.exports = {
             })
     },
 
-    delete(request, response, next) {
+    destroy(request, response, next) {
         const order = Order.findByIdAndDelete(request.params.orderId)
             .exec()
             .then(result => {

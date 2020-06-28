@@ -97,7 +97,7 @@ module.exports = {
         });
     },
 
-    delete(request, response, next) {
+    destroy(request, response, next) {
         const product = Product.findByIdAndDelete(request.params.productId)
             .exec()
             .then(result => {

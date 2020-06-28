@@ -37,6 +37,6 @@ router.get('/', auth, productController.index);
 router.get('/:productId', auth, productController.show);
 router.post('/', auth, upload.single('productImage'), productController.store);
 router.put('/:productId', auth, productController.update);
-router.delete('/:productId', auth,);
+router.delete('/:productId', auth, productController.destroy);
 
 module.exports = router;

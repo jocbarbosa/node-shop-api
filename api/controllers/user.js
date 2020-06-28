@@ -83,7 +83,7 @@ module.exports = {
             })
     },
 
-    delete(request, response, next) {
+    destroy(request, response, next) {
         User.findByIdAndDelete(request.params.userId)
             .then(result => {
                 if (result) {
