@@ -36,7 +36,7 @@ app.use((request, response, next) => {
 // Routes which handle the requests
 app.use('/products', productsRoutes);
 app.use('/orders', ordersRoutes);
-app.use('/users', userRoutes);
+app.use('/user', userRoutes);
 
 
 app.use((request, response, next) => {
